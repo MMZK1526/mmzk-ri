@@ -1,7 +1,7 @@
 cabal-version: 3.0
 name:          mmzk-ri
 version:       0.1.0.0
-synopsis:      A supplementary collection for real-life Haskell programming
+synopsis:      A supplementary collection of functions for real-life Haskell programming
 
 description:
     This package provides a supplementary collection of functions that I often use but are not present in Prelude.
