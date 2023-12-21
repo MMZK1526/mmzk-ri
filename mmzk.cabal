@@ -1,0 +1,136 @@
+cabal-version: 3.0
+name:          mmzk-ri
+version:       0.1.0.0
+synopsis:      A supplementary collection for real-life Haskell programming
+
+description:
+    This package provides a supplementary collection of functions that I often use but are not present in Prelude.
+    .
+    It is purely a library for my personal use, thus some of the decision of what is "useful" is subjective. Nevertheless, I hope that some part of this package will be useful for you as well.
+    .
+    It is designed to have minimal dependency to keep it lightweight. However, this does not mean that this library is suitable as a Prelude replacement since it may contain arguably too specific functions which are only there because they are useful to me.
+
+    Currently, it contains the following features:
+    .
+      - A correct (and faster) implementation for reading @String@s into built-in fix-sized integral types.
+    .
+      - More monadic control flow functions.
+    .
+      - Other miscellaneous functions.
+
+license:      MIT
+license-file: LICENSE
+author:       mmzk1526
+maintainer:   mmzk1526@outlook.com
+build-type:   Simple
+
+extra-doc-files:
+    CHANGELOG.md
+    README.md
+
+common warnings
+    ghc-options: -Wall -O2 -threaded
+
+library
+    import:           warnings
+    exposed-modules:
+        MMZK.Maybe,
+        MMZK.Monad,
+        MMZK.Function,
+        MMZK.RI,
+        MMZK.Read
+    other-modules:
+        MMZK.Read.Internal
+    default-extensions:
+        BlockArguments,
+        DataKinds,
+        DeriveAnyClass,
+        DeriveGeneric,
+        DerivingStrategies,
+        DuplicateRecordFields,
+        InstanceSigs,
+        FlexibleInstances,
+        LambdaCase,
+        NegativeLiterals,
+        NoFieldSelectors,
+        OverloadedRecordDot,
+        OverloadedStrings,
+        PatternSynonyms,
+        ScopedTypeVariables,
+        TypeApplications,
+        ViewPatterns
+    build-depends:
+        base ^>=4.17.2.0,
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+
+test-suite test
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    main-is:          Spec.hs
+    other-modules:
+        MMZK.Function,
+        MMZK.Maybe,
+        MMZK.RI,
+        MMZK.Read,
+        MMZK.Read.Internal
+    default-extensions:
+        BlockArguments,
+        DataKinds,
+        DeriveAnyClass,
+        DeriveGeneric,
+        DerivingStrategies,
+        DuplicateRecordFields,
+        InstanceSigs,
+        FlexibleInstances,
+        LambdaCase,
+        NegativeLiterals,
+        NoFieldSelectors,
+        OverloadedRecordDot,
+        OverloadedStrings,
+        PatternSynonyms,
+        ScopedTypeVariables,
+        TypeApplications,
+        ViewPatterns
+    build-depends:
+        base ^>= 4.17.2.0,
+        hspec >= 2.11.7 && < 2.12,
+    hs-source-dirs:
+        src
+        test
+    default-language: Haskell2010
+
+
+benchmark bench
+    import:          warnings
+    type:            exitcode-stdio-1.0
+    main-is:         Bench.hs
+    other-modules:
+        MMZK.Function,
+        MMZK.Read.Internal
+    default-extensions:
+        BlockArguments,
+        DataKinds,
+        DeriveAnyClass,
+        DeriveGeneric,
+        DerivingStrategies,
+        DuplicateRecordFields,
+        InstanceSigs,
+        FlexibleInstances,
+        LambdaCase,
+        NegativeLiterals,
+        NoFieldSelectors,
+        OverloadedRecordDot,
+        OverloadedStrings,
+        PatternSynonyms,
+        ScopedTypeVariables,
+        TypeApplications,
+        ViewPatterns
+    build-depends:
+        base ^>=4.17.2.0,
+        criterion >= 1.6.3 && < 1.7,
+    hs-source-dirs:
+        bench
+        src
+    default-language: Haskell2010
