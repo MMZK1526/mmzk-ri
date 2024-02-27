@@ -24,10 +24,19 @@ class MMZKRead a where
   -- | The counterpart of 'Text.Read.readEither'.
   rdEither :: String -> Either String a
   rdEither = m2e "MMZK.Read.rdEither: parse error" . rdMaybe
+  {-# INLINE rdEither #-}
 
   -- | The counterpart of 'Text.Read.readMaybe'.
   rdMaybe :: String -> Maybe a
   rdMaybe = e2m . rdEither
+  {-# INLINE rdMaybe #-}
+
+  -- | The counterpart of 'Text.Read.read'.
+  rd :: String -> a
+  rd str = case rdEither str of
+    Left e  -> error e
+    Right x -> x
+  {-# INLINE rd #-}
 
 instance {-# OVERLAPPABLE #-} Read a => MMZKRead a where
   rdEither :: Read a => String -> Either String a
