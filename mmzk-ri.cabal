@@ -71,7 +71,7 @@ library
         ViewPatterns
     build-depends:
         array >= 0.5.4 && < 0.6,
-        base ^>= 4.17.2.0,
+        base,
         text >= 2.0.2 && < 2.1,
     hs-source-dirs:   src
     default-language: Haskell2010
@@ -113,7 +113,7 @@ test-suite test
         ViewPatterns
     build-depends:
         array,
-        base ^>= 4.17.2.0,
+        base,
         hspec >= 2.11.7 && < 2.12,
         QuickCheck >= 2.14 && < 2.15,
         text,
@@ -154,7 +154,7 @@ benchmark bench
         ViewPatterns
     build-depends:
         array,
-        base ^>= 4.17.2.0,
+        base,
         criterion >= 1.6.3 && < 1.7,
         text,
     hs-source-dirs:
