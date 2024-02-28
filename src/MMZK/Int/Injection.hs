@@ -8,7 +8,9 @@
 -- Its original use case is for extending "Int"-indexed data structures such as
 -- "Data.IntSet" to work with types "smaller" than "Int" (e.g. "Int8", "Int16").
 module MMZK.Int.Injection
-  (Intable(..)
+  ( Intable(..)
+  , module Data.Int
+  , module Data.Word
   ) where
 
 import           Data.Int

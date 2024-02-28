@@ -82,6 +82,7 @@ test-suite test
     type:             exitcode-stdio-1.0
     main-is:          Spec.hs
     other-modules:
+        Int.Injection.Spec,
         MMZK.Function,
         MMZK.Int.Injection,
         MMZK.Maybe,
