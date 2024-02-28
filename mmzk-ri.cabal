@@ -67,6 +67,7 @@ library
         PatternSynonyms,
         ScopedTypeVariables,
         TypeApplications,
+        TypeFamilies,
         TypeOperators,
         ViewPatterns
     build-depends:
@@ -109,6 +110,7 @@ test-suite test
         PatternSynonyms,
         ScopedTypeVariables,
         TypeApplications,
+        TypeFamilies,
         TypeOperators,
         ViewPatterns
     build-depends:
@@ -150,6 +152,7 @@ benchmark bench
         PatternSynonyms,
         ScopedTypeVariables,
         TypeApplications,
+        TypeFamilies,
         TypeOperators,
         ViewPatterns
     build-depends:
