@@ -1,4 +1,5 @@
 import           Int.Injection.Spec
+import           Maybe.Spec
 import           MMZK.Maybe
 import           MMZK.RI
 import           MMZK.Read
@@ -15,20 +16,6 @@ spec = do
   maybeSpec
   readSpec
   riSpec
-
-maybeSpec :: Spec
-maybeSpec = describe "MMZK.Maybe" do
-  describe "er2m" do
-    it "converts 'Either' to 'Maybe" do
-      er2m (Left @String @Bool "foo") `shouldBe` Nothing
-      er2m (Right @String @Bool True) `shouldBe` Just True
-      el2m (Left @String @Bool "foo") `shouldBe` Just "foo"
-      el2m (Right @String @Bool True) `shouldBe` Nothing
-    it "convers 'Maybe' to 'Either" do
-      m2er @String @Bool "foo" Nothing `shouldBe` Left "foo"
-      m2er @String @Bool "foo" (Just True) `shouldBe` Right True
-      m2el @String @Bool "foo" Nothing `shouldBe` Right "foo"
-      m2el @String @Bool "foo" (Just True) `shouldBe` Left True
 
 readSpec :: Spec
 readSpec = describe "MMZK.Read" do
