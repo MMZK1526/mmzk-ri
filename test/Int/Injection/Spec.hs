@@ -2,7 +2,7 @@
 
 #include "MachDeps.h"
 
-module Int.Injection.Spec where
+module Int.Injection.Spec (intInjectionSpec) where
 
 import           MMZK.Int.Injection
 import           Test.Hspec

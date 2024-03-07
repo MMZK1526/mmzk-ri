@@ -1,3 +1,5 @@
+module Maybe.Spec (maybeSpec) where
+
 import           MMZK.Maybe
 import           Test.Hspec
 
