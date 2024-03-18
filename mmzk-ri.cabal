@@ -54,9 +54,10 @@ library
         DeriveGeneric,
         DerivingStrategies,
         DuplicateRecordFields,
+        FlexibleContexts,
+        FlexibleInstances,
         GeneralizedNewtypeDeriving,
         InstanceSigs,
-        FlexibleInstances,
         KindSignatures,
         LambdaCase,
         MultiParamTypeClasses,
@@ -69,7 +70,7 @@ library
         TypeApplications,
         TypeFamilies,
         TypeOperators,
-        ViewPatterns
+        ViewPatterns,
     build-depends:
         array >= 0.5.4 && < 0.6,
         base,
@@ -99,9 +100,10 @@ test-suite test
         DeriveGeneric,
         DerivingStrategies,
         DuplicateRecordFields,
+        FlexibleContexts,
+        FlexibleInstances,
         GeneralizedNewtypeDeriving,
         InstanceSigs,
-        FlexibleInstances,
         KindSignatures,
         LambdaCase,
         MultiParamTypeClasses,
@@ -114,7 +116,7 @@ test-suite test
         TypeApplications,
         TypeFamilies,
         TypeOperators,
-        ViewPatterns
+        ViewPatterns,
     build-depends:
         array,
         base,
@@ -141,9 +143,10 @@ benchmark bench
         DeriveGeneric,
         DerivingStrategies,
         DuplicateRecordFields,
+        FlexibleContexts,
+        FlexibleInstances,
         GeneralizedNewtypeDeriving,
         InstanceSigs,
-        FlexibleInstances,
         KindSignatures,
         LambdaCase,
         MultiParamTypeClasses,
@@ -156,7 +159,7 @@ benchmark bench
         TypeApplications,
         TypeFamilies,
         TypeOperators,
-        ViewPatterns
+        ViewPatterns,
     build-depends:
         array,
         base,
