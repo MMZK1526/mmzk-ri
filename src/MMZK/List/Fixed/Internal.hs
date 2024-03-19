@@ -1,124 +1,122 @@
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE UndecidableInstances #-}
-
 module MMZK.List.Fixed.Internal where
 
 import           Data.Foldable
 import           Data.Proxy
 import           Data.Type.Ord
 import           GHC.TypeLits
+import           Prelude hiding (head, tail, init, last, null, reverse, (++))
+import qualified Prelude
 
-type family IsZero (n :: Nat) :: Bool where
-  IsZero 0 = 'True
-  IsZero _ = 'False
+newtype ListFixed (len :: Nat) e = ListFixed [e]
+  deriving newtype (Eq, Ord, Functor)
 
-class Eq' a (b :: Bool) where
-  eq' :: Proxy b -> a -> a -> Bool
+instance (Show e, KnownNat len) => Show (ListFixed len e) where
+  showsPrec :: Int -> ListFixed len e -> ShowS
+  showsPrec d (ListFixed xs) = ("length " <>)
+                             . showsPrec d (natVal (Proxy @len))
+                             . (": " <>) . showsPrec d xs
+  {-# INLINE showsPrec #-}
 
-class Ord' a (b :: Bool) where
-  compare' :: Proxy b -> a -> a -> Ordering
-
-infixr 5 :~
-data ListFixed (len :: Nat) e where
-  Nil  :: ListFixed 0 e
-  (:~) :: n > 0 => e -> ListFixed (n - 1) e -> ListFixed n e
-
-instance (Eq e, Eq' (ListFixed (len :: Nat) e) (IsZero len))
-  => Eq (ListFixed len e) where
-    (==) :: ListFixed len e -> ListFixed len e -> Bool
-    (==) = eq' (Proxy :: Proxy (IsZero len))
-    {-# INLINE (==) #-}
-
-instance ( Ord e, Eq (ListFixed (len :: Nat) e)
-         , Ord' (ListFixed (len :: Nat) e) (IsZero len)
-         ) =>
-  Ord (ListFixed len e) where
-    compare :: ListFixed len e -> ListFixed len e -> Ordering
-    compare = compare' (Proxy :: Proxy (IsZero len))
-    {-# INLINE compare #-}
-
-instance Eq' (ListFixed 0 e) 'True where
-  eq' :: Proxy 'True -> ListFixed 0 e -> ListFixed 0 e -> Bool
-  eq' _ _ _ = True
-  {-# INLINE eq' #-}
-
-instance (Eq e, Eq' (ListFixed (n - 1) e) (IsZero (n - 1)), n > 0)
-  => Eq' (ListFixed n e) 'False where
-    eq' :: Proxy 'False -> ListFixed n e -> ListFixed n e -> Bool
-    eq' _ (x :~ xs) (y :~ ys) = x == y && eq' (Proxy @(IsZero (n - 1))) xs ys
-    {-# INLINE eq' #-}
-
-instance Ord' (ListFixed 0 e) 'True where
-  compare' :: Proxy 'True -> ListFixed 0 e -> ListFixed 0 e -> Ordering
-  compare' _ _ _ = EQ
-  {-# INLINE compare' #-}
-
-instance ( Ord e, Ord (ListFixed (n - 1) e)
-         , Ord' (ListFixed (n - 1) e) (IsZero (n - 1)), n > 0
-         ) => Ord' (ListFixed n e) 'False where
-    compare' :: Proxy 'False -> ListFixed n e -> ListFixed n e -> Ordering
-    compare' _ (x :~ xs) (y :~ ys)
-      = compare x y <> compare' (Proxy @(IsZero (n - 1))) xs ys
-    {-# INLINE compare' #-}
-
-instance Show e => Show (ListFixed len e) where
-  show :: ListFixed len e -> String
-  show = show . toList
-  {-# INLINE show #-}
-
-instance Foldable (ListFixed len) where
+instance KnownNat len => Foldable (ListFixed len) where
   foldMap :: Monoid m => (a -> m) -> ListFixed len a -> m
-  foldMap _ Nil     = mempty
-  foldMap f (x:~xs) = f x <> foldMap f xs
+  foldMap f (ListFixed xs) = foldMap f xs
   {-# INLINE foldMap #-}
 
   length :: ListFixed len a -> Int
-  length Nil     = 0
-  length (_:~xs) = 1 + length xs
+  length _ = fromIntegral (natVal (Proxy @len))
   {-# INLINE length #-}
 
-instance Functor (ListFixed len) where
-  fmap :: (a -> b) -> ListFixed len a -> ListFixed len b
-  fmap _ Nil     = Nil
-  fmap f (x:~xs) = f x :~ fmap f xs
-  {-# INLINE fmap #-}
-
-instance Traversable (ListFixed len) where
+instance (KnownNat len) => Traversable (ListFixed len) where
   traverse :: Applicative f
            => (a -> f b) -> ListFixed len a -> f (ListFixed len b)
-  traverse _ Nil     = pure Nil
-  traverse f (x:~xs) = (:~) <$> f x <*> traverse f xs
+  traverse f (ListFixed xs) = ListFixed <$> traverse f xs
   {-# INLINE traverse #-}
 
-head :: n > 0 => ListFixed n e -> e
-head (x:~_) = x
+-- | Get the first element of a non-empty 'ListFixed'.
+head :: len > 0 => ListFixed len e -> e
+head (ListFixed xs) = Prelude.head xs
 {-# INLINE head #-}
 
-tail :: n > 0 => ListFixed n e -> ListFixed (n - 1) e
-tail (_:~xs) = xs
+-- | Get all elements of a non-empty 'ListFixed' except the first one.
+tail :: len > 0 => ListFixed len e -> ListFixed (len - 1) e
+tail (ListFixed xs) = ListFixed (Prelude.tail xs)
 {-# INLINE tail #-}
 
-init :: n > 0 => ListFixed n e -> ListFixed (n - 1) e
-init (_:~Nil)        = Nil
-init (x:~xs'@(_:~_)) = x :~ MMZK.List.Fixed.Internal.init xs'
+-- | Get all elements of a non-empty 'ListFixed' except the last one.
+init :: len > 0 => ListFixed len e -> ListFixed (len - 1) e
+init (ListFixed xs) = ListFixed (Prelude.init xs)
 {-# INLINE init #-}
 
-last :: n > 0 => ListFixed n e -> e
-last (x:~Nil)      = x
-last (_:~(x':~xs)) = MMZK.List.Fixed.Internal.last (x' :~ xs)
+-- | Get the last element of a non-empty 'ListFixed'.
+last :: len > 0 => ListFixed len e -> e
+last (ListFixed xs) = Prelude.last xs
 {-# INLINE last #-}
 
--- (++) :: ListFixed n e -> ListFixed m e -> ListFixed (Plus n m) e
--- Nil ++ ys       = ys
--- (x :~ xs) ++ ys = x :~ (xs MMZK.List.Fixed.Internal.++ ys)
--- {-# INLINE (++) #-}
+-- | Concatenate two 'ListFixed's.
+(++) :: ListFixed n e -> ListFixed m e -> ListFixed (n + m) e
+ListFixed xs ++ ListFixed ys = ListFixed (xs Prelude.++ ys)
+infixr 5 ++
+{-# INLINE (++) #-}
 
+-- | Check if a 'ListFixed' is empty.
 null :: ListFixed len e -> Bool
-null Nil = True
-null _   = False
+null (ListFixed xs) = Prelude.null xs
 {-# INLINE null #-}
 
+-- | Check if a 'ListFixed' is empty.
+empty :: ListFixed 0 e
+empty = ListFixed []
+{-# INLINE empty #-}
+
+-- | Construct a 'ListFixed' with a single element.
 singleton :: e -> ListFixed 1 e
-singleton x = x :~ Nil
+singleton x = ListFixed [x]
 {-# INLINE singleton #-}
+
+-- | Prepend an element to a 'ListFixed'.
+cons :: e -> ListFixed n e -> ListFixed (n + 1) e
+cons x (ListFixed xs) = ListFixed (x : xs)
+{-# INLINE cons #-}
+
+-- | Deconstruct a 'ListFixed' into its 'head' and 'tail'.
+uncons :: ListFixed (n + 1) e -> Maybe (e, ListFixed n e)
+uncons (ListFixed (x:xs)) = Just (x, ListFixed xs)
+uncons _ = Nothing
+{-# INLINE uncons #-}
+
+-- | Append an element to a 'ListFixed'.
+snoc :: ListFixed n e -> e -> ListFixed (n + 1) e
+snoc (ListFixed xs) x = ListFixed (xs <> [x])
+{-# INLINE snoc #-}
+
+-- | Deconstruct a 'ListFixed' into its 'init' and 'last'.
+unsnoc :: ListFixed (n + 1) e -> Maybe (ListFixed n e, e)
+unsnoc (ListFixed xs) = case Prelude.reverse xs of
+  []   -> Nothing
+  y:ys -> Just (ListFixed (Prelude.reverse ys), y)
+{-# INLINE unsnoc #-}
+
+-- | Convert a 'ListFixed'' to a list, erasing the length information.
+eraseLen :: ListFixed len e -> [e]
+eraseLen (ListFixed xs) = xs
+{-# INLINE eraseLen #-}
+
+-- | Inject length information into a list, adding a compile-time known length.
+-- The function is unsafe since it does not (and cannot) check if the provided
+-- length is correct.
+-- The function is often used with TypeApplications, for example:
+-- >>> injectLenUnsafe @3 [0, 1, 2]
+-- length 3: [0,1,2]
+injectLenUnsafe :: forall len e. [e] -> ListFixed len e
+injectLenUnsafe = ListFixed
+{-# INLINE injectLenUnsafe #-}
+
+pattern Nil :: ListFixed 0 e
+pattern Nil = ListFixed []
+
+infixr 5 :~
+pattern (:~) :: e -> ListFixed n e -> ListFixed (n + 1) e
+pattern x:~xs <- (uncons -> Just (x, xs))
+  where
+    x:~xs = cons x xs
+{-# COMPLETE Nil, (:~) #-}

@@ -17,6 +17,14 @@ import           GHC.TypeLits
 newtype ArrayFixed (len :: Nat) ix e = ArrayFixed (Array ix e)
   deriving newtype (Eq, Ord, Functor)
 
+instance (Show e, Show ix, Ix ix, KnownNat len)
+  => Show (ArrayFixed len ix e) where
+    showsPrec :: Int -> ArrayFixed len ix e -> ShowS
+    showsPrec d (ArrayFixed arr) = ("length " ++)
+                                 . showsPrec d (natVal (Proxy @len))
+                                 . (": " ++) . showsPrec d arr
+    {-# INLINE showsPrec #-}
+
 instance KnownNat len => Foldable (ArrayFixed len ix) where
   foldMap :: Monoid m => (a -> m) -> ArrayFixed len ix a -> m
   foldMap f (ArrayFixed arr) = foldMap f arr
@@ -25,14 +33,6 @@ instance KnownNat len => Foldable (ArrayFixed len ix) where
   length :: ArrayFixed len ix a -> Int
   length _ = fromIntegral (natVal (Proxy @len))
   {-# INLINE length #-}
-
-instance (Show e, Show ix, Ix ix, KnownNat len)
-  => Show (ArrayFixed len ix e) where
-    showsPrec :: Int -> ArrayFixed len ix e -> ShowS
-    showsPrec d (ArrayFixed arr) = ("length " ++)
-                                 . showsPrec d (natVal (Proxy @len))
-                                 . (' ' :) . showsPrec d arr
-    {-# INLINE showsPrec #-}
 
 instance KnownNat len => IArray (ArrayFixed len) e where
   bounds :: Ix ix => ArrayFixed len ix e -> (ix, ix)
