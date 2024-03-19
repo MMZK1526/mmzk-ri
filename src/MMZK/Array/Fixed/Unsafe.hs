@@ -1,6 +1,5 @@
 module MMZK.Array.Fixed.Unsafe
-  (
-    injectLenUnsafe
+  ( injectLenUnsafe
   ) where
 
 import           MMZK.Array.Fixed.Internal
