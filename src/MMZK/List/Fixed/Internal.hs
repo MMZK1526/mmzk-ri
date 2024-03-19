@@ -69,44 +69,44 @@ instance Show e => Show (ListFixed len e) where
 
 instance Foldable (ListFixed len) where
   foldMap :: Monoid m => (a -> m) -> ListFixed len a -> m
-  foldMap _ Nil       = mempty
-  foldMap f (x :~ xs) = f x <> foldMap f xs
+  foldMap _ Nil     = mempty
+  foldMap f (x:~xs) = f x <> foldMap f xs
   {-# INLINE foldMap #-}
 
   length :: ListFixed len a -> Int
-  length Nil       = 0
-  length (_ :~ xs) = 1 + length xs
+  length Nil     = 0
+  length (_:~xs) = 1 + length xs
   {-# INLINE length #-}
 
 instance Functor (ListFixed len) where
   fmap :: (a -> b) -> ListFixed len a -> ListFixed len b
-  fmap _ Nil       = Nil
-  fmap f (x :~ xs) = f x :~ fmap f xs
+  fmap _ Nil     = Nil
+  fmap f (x:~xs) = f x :~ fmap f xs
   {-# INLINE fmap #-}
 
 instance Traversable (ListFixed len) where
   traverse :: Applicative f
            => (a -> f b) -> ListFixed len a -> f (ListFixed len b)
-  traverse _ Nil       = pure Nil
-  traverse f (x :~ xs) = (:~) <$> f x <*> traverse f xs
+  traverse _ Nil     = pure Nil
+  traverse f (x:~xs) = (:~) <$> f x <*> traverse f xs
   {-# INLINE traverse #-}
 
 head :: n > 0 => ListFixed n e -> e
-head (x :~ _) = x
+head (x:~_) = x
 {-# INLINE head #-}
 
 tail :: n > 0 => ListFixed n e -> ListFixed (n - 1) e
-tail (_ :~ xs) = xs
+tail (_:~xs) = xs
 {-# INLINE tail #-}
 
 init :: n > 0 => ListFixed n e -> ListFixed (n - 1) e
-init (_ :~ Nil)          = Nil
-init (x :~ xs'@(_ :~ _)) = x :~ MMZK.List.Fixed.Internal.init xs'
+init (_:~Nil)        = Nil
+init (x:~xs'@(_:~_)) = x :~ MMZK.List.Fixed.Internal.init xs'
 {-# INLINE init #-}
 
 last :: n > 0 => ListFixed n e -> e
-last (x :~ Nil)        = x
-last (_ :~ (x' :~ xs)) = MMZK.List.Fixed.Internal.last (x' :~ xs)
+last (x:~Nil)      = x
+last (_:~(x':~xs)) = MMZK.List.Fixed.Internal.last (x' :~ xs)
 {-# INLINE last #-}
 
 -- (++) :: ListFixed n e -> ListFixed m e -> ListFixed (Plus n m) e
