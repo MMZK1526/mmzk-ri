@@ -1,11 +1,18 @@
+{-# LANGUAGE UndecidableInstances #-}
+
 module MMZK.List.Fixed.Internal where
 
 import           Data.Foldable
 import           Data.Proxy
 import           Data.Type.Ord
 import           GHC.TypeLits
+import qualified Data.List as List
 import           Prelude hiding (head, tail, init, last, null, reverse, (++))
 import qualified Prelude
+
+type family Factorial (n :: Nat) where
+  Factorial 0 = 1
+  Factorial n = n * Factorial (n - 1)
 
 newtype ListFixed (len :: Nat) e = ListFixed [e]
   deriving newtype (Eq, Ord, Functor)
@@ -79,22 +86,37 @@ cons x (ListFixed xs) = ListFixed (x : xs)
 {-# INLINE cons #-}
 
 -- | Deconstruct a 'ListFixed' into its 'head' and 'tail'.
-uncons :: ListFixed (n + 1) e -> Maybe (e, ListFixed n e)
-uncons (ListFixed (x:xs)) = Just (x, ListFixed xs)
-uncons _ = Nothing
+uncons :: ListFixed (n + 1) e -> (e, ListFixed n e)
+uncons (ListFixed (x:xs)) = (x, ListFixed xs)
+uncons _                  = error "impossible: uncons on empty list"
 {-# INLINE uncons #-}
 
--- | Append an element to a 'ListFixed'.
-snoc :: ListFixed n e -> e -> ListFixed (n + 1) e
-snoc (ListFixed xs) x = ListFixed (xs <> [x])
-{-# INLINE snoc #-}
+-- | Reverse a 'ListFixed'.
+reverse :: ListFixed len e -> ListFixed len e
+reverse (ListFixed xs) = ListFixed (Prelude.reverse xs)
+{-# INLINE reverse #-}
 
--- | Deconstruct a 'ListFixed' into its 'init' and 'last'.
-unsnoc :: ListFixed (n + 1) e -> Maybe (ListFixed n e, e)
-unsnoc (ListFixed xs) = case Prelude.reverse xs of
-  []   -> Nothing
-  y:ys -> Just (ListFixed (Prelude.reverse ys), y)
-{-# INLINE unsnoc #-}
+transpose :: ListFixed n (ListFixed m e) -> ListFixed m (ListFixed n e)
+transpose (ListFixed xss) =
+  ListFixed (ListFixed <$> List.transpose (eraseLen <$> xss))
+{-# INLINE transpose #-}
+
+permutations :: ListFixed n e -> ListFixed (Factorial n) (ListFixed n e)
+permutations (ListFixed xs) = ListFixed (ListFixed <$> List.permutations xs)
+{-# INLINE permutations #-}
+
+foldl1' :: (e -> e -> e) -> ListFixed (n + 1) e -> e
+foldl1' f (ListFixed (x:xs)) = List.foldl' f x xs
+foldl1' _ _                  = error "impossible: foldl1' on empty list"
+{-# INLINE foldl1' #-}
+
+concat :: ListFixed n (ListFixed m e) -> ListFixed (n * m) e
+concat (ListFixed xss) = ListFixed (List.concatMap eraseLen xss)
+{-# INLINE concat #-}
+
+concatMap :: (e -> ListFixed m e') -> ListFixed n e -> ListFixed (n * m) e'
+concatMap f (ListFixed xs) = ListFixed (List.concatMap (eraseLen . f) xs)
+{-# INLINE concatMap #-}
 
 -- | Convert a 'ListFixed'' to a list, erasing the length information.
 eraseLen :: ListFixed len e -> [e]
@@ -116,7 +138,8 @@ pattern Nil = ListFixed []
 
 infixr 5 :~
 pattern (:~) :: e -> ListFixed n e -> ListFixed (n + 1) e
-pattern x:~xs <- (uncons -> Just (x, xs))
+pattern x:~xs <- (uncons -> (x, xs))
   where
     x:~xs = cons x xs
+
 {-# COMPLETE Nil, (:~) #-}
