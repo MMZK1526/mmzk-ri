@@ -42,7 +42,7 @@ library
         MMZK.Maybe,
         MMZK.Monad,
         MMZK.Function,
-        MMZK.RI,
+        MMZK.List,
         MMZK.Read,
         MMZK.Text,
     other-modules:
@@ -91,7 +91,7 @@ test-suite test
         MMZK.Function,
         MMZK.Int.Injection,
         MMZK.Maybe,
-        MMZK.RI,
+        MMZK.List,
         MMZK.Read,
         MMZK.Read.Internal
     default-extensions:

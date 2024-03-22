@@ -1,8 +1,8 @@
 {-# LANGUAGE ExistentialQuantification #-}
 
--- | This module provides some core helper functions that are useful in basic
--- Haskell programming.
-module MMZK.RI where
+-- | This module provides some helper functions that are useful for list
+-- operations.
+module MMZK.List where
 
 -- | The 'LenCompare' type is used to compare lists by their length. It is a
 -- more efficient implementation than by comparing 'length' values directly

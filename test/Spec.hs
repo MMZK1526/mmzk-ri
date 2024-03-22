@@ -1,7 +1,7 @@
 import           Int.Injection.Spec
 import           Maybe.Spec
 import           Read.Spec
-import           MMZK.RI
+import           MMZK.List
 import           Test.Hspec
 
 main :: IO ()
