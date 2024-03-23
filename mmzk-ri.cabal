@@ -86,6 +86,7 @@ test-suite test
     main-is:          Spec.hs
     other-modules:
         Int.Injection.Spec,
+        List.Spec,
         Maybe.Spec,
         Read.Spec,
         MMZK.Function,

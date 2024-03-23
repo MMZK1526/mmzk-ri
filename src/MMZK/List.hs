@@ -2,7 +2,14 @@
 
 -- | This module provides some helper functions that are useful for list
 -- operations.
-module MMZK.List where
+module MMZK.List (
+  -- * Length comparison
+  lenCompare,
+  lenCompare',
+  lenCompareNum,
+  -- * Utilities
+  notNull
+) where
 
 -- | The 'LenCompare' type is used to compare lists by their length. It is a
 -- more efficient implementation than by comparing 'length' values directly
