@@ -35,9 +35,9 @@ library
     import:           warnings
     exposed-modules:
         MMZK.Array.Fixed,
-        MMZK.Array.Fixed.Internal,
         MMZK.Array.Fixed.Unsafe,
-        MMZK.List.Fixed.Internal,
+        MMZK.List.Fixed,
+        MMZK.List.Fixed.Unsafe,
         MMZK.Int.Injection,
         MMZK.Maybe,
         MMZK.Monad,
@@ -46,7 +46,9 @@ library
         MMZK.Read,
         MMZK.Text,
     other-modules:
-        MMZK.Read.Internal
+        MMZK.Array.Fixed.Internal,
+        MMZK.List.Fixed.Internal,
+        MMZK.Read.Internal,
     default-extensions:
         BlockArguments,
         DataKinds,

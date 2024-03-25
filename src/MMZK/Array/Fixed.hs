@@ -1,11 +1,11 @@
 -- | Fixed-length arrays with compile-time known length.
 module MMZK.Array.Fixed
   (
-  -- * Fixed-length arrays
+  -- * Fixed-length array
     ArrayFixed
   -- * Element access
   , readArr
-  -- * Normal array/list conversion
+  -- * Conversion
   , eraseLen
   ) where
 

@@ -33,6 +33,10 @@ instance KnownNat len => Foldable (ListFixed len) where
   length _ = fromIntegral (natVal (Proxy @len))
   {-# INLINE length #-}
 
+  foldr :: (a -> b -> b) -> b -> ListFixed len a -> b
+  foldr f z (ListFixed xs) = foldr f z xs
+  {-# INLINE foldr #-}
+
 instance (KnownNat len) => Traversable (ListFixed len) where
   traverse :: Applicative f
            => (a -> f b) -> ListFixed len a -> f (ListFixed len b)
@@ -65,12 +69,7 @@ ListFixed xs ++ ListFixed ys = ListFixed (xs Prelude.++ ys)
 infixr 5 ++
 {-# INLINE (++) #-}
 
--- | Check if a 'ListFixed' is empty.
-null :: ListFixed len e -> Bool
-null (ListFixed xs) = Prelude.null xs
-{-# INLINE null #-}
-
--- | Check if a 'ListFixed' is empty.
+-- | The empty 'ListFixed'.
 empty :: ListFixed 0 e
 empty = ListFixed []
 {-# INLINE empty #-}
@@ -110,14 +109,6 @@ foldl1' f (ListFixed (x:xs)) = List.foldl' f x xs
 foldl1' _ _                  = error "impossible: foldl1' on empty list"
 {-# INLINE foldl1' #-}
 
-concat :: ListFixed n (ListFixed m e) -> ListFixed (n * m) e
-concat (ListFixed xss) = ListFixed (List.concatMap eraseLen xss)
-{-# INLINE concat #-}
-
-concatMap :: (e -> ListFixed m e') -> ListFixed n e -> ListFixed (n * m) e'
-concatMap f (ListFixed xs) = ListFixed (List.concatMap (eraseLen . f) xs)
-{-# INLINE concatMap #-}
-
 -- | Convert a 'ListFixed'' to a list, erasing the length information.
 eraseLen :: ListFixed len e -> [e]
 eraseLen (ListFixed xs) = xs
@@ -133,9 +124,11 @@ injectLenUnsafe :: forall len e. [e] -> ListFixed len e
 injectLenUnsafe = ListFixed
 {-# INLINE injectLenUnsafe #-}
 
+-- | Pattern for matching an empty 'ListFixed'.
 pattern Nil :: ListFixed 0 e
 pattern Nil = ListFixed []
 
+-- | Pattern for decomposing a non-empty 'ListFixed'.
 infixr 5 :~
 pattern (:~) :: e -> ListFixed n e -> ListFixed (n + 1) e
 pattern x:~xs <- (uncons -> (x, xs))
