@@ -26,6 +26,7 @@ module MMZK.List.Fixed
   -- * Reducing lists (folds)
   , concat
   , concatMap
+  , foldl1'
   -- * Conversion
   , eraseLen
   ) where
