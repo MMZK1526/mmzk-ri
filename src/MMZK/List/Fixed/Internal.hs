@@ -95,15 +95,18 @@ reverse :: ListFixed len e -> ListFixed len e
 reverse (ListFixed xs) = ListFixed (Prelude.reverse xs)
 {-# INLINE reverse #-}
 
+-- | Transpose a 'ListFixed' of 'ListFixed's.
 transpose :: ListFixed n (ListFixed m e) -> ListFixed m (ListFixed n e)
 transpose (ListFixed xss) =
   ListFixed (ListFixed <$> List.transpose (eraseLen <$> xss))
 {-# INLINE transpose #-}
 
+-- | All permutations of a 'ListFixed'.
 permutations :: ListFixed n e -> ListFixed (Factorial n) (ListFixed n e)
 permutations (ListFixed xs) = ListFixed (ListFixed <$> List.permutations xs)
 {-# INLINE permutations #-}
 
+-- | Strict left-to-right fold of a non-empty 'ListFixed'.
 foldl1' :: (e -> e -> e) -> ListFixed (n + 1) e -> e
 foldl1' f (ListFixed (x:xs)) = List.foldl' f x xs
 foldl1' _ _                  = error "impossible: foldl1' on empty list"

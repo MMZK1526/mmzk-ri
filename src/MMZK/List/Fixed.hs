@@ -29,6 +29,8 @@ module MMZK.List.Fixed
   , foldl1'
   -- * Conversion
   , eraseLen
+  -- * Utilities
+  , Factorial
   ) where
 
 import           Data.Foldable
