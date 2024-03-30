@@ -38,6 +38,7 @@ library
         MMZK.Array.Fixed.Unsafe,
         MMZK.List.Fixed,
         MMZK.List.Fixed.Unsafe,
+        MMZK.Array.Unboxed.Fixed,
         MMZK.Int.Injection,
         MMZK.Maybe,
         MMZK.Monad,
