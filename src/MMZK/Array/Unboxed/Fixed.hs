@@ -28,3 +28,20 @@ instance (Show e, Show ix, Ix ix, IArray UArray e, KnownNat len)
                                   . showsPrec d (natVal (Proxy @len))
                                  . (": " ++) . showsPrec d arr
     {-# INLINE showsPrec #-}
+
+instance (IArray UArray e, KnownNat len) => IArray (UArrayFixed' len) e where
+  bounds :: Ix ix => UArrayFixed' len ix e -> (ix, ix)
+  bounds (UArrayFixed arr) = bounds arr
+  {-# INLINE bounds #-}
+
+  numElements :: Ix ix => UArrayFixed' len ix e -> Int
+  numElements _ = fromIntegral (natVal (Proxy @len))
+  {-# INLINE numElements #-}
+
+  unsafeArray :: Ix ix => (ix, ix) -> [(Int, e)] -> UArrayFixed' len ix e
+  unsafeArray = (UArrayFixed .) . unsafeArray
+  {-# INLINE unsafeArray #-}
+
+  unsafeAt :: Ix ix => UArrayFixed' len ix e -> Int -> e
+  unsafeAt (UArrayFixed arr) = unsafeAt arr
+  {-# INLINE unsafeAt #-}
