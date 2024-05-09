@@ -62,14 +62,14 @@ instance (Ix ix, KnownNat len) => Traversable (ArrayFixed' len ix) where
 -- | Read an element from a compile-time known index without runtime bounds
 -- checking.
 readArr :: forall loc len e
-        . (KnownNat loc, KnownNat len, loc >= 0, loc < len)
-       => ArrayFixed len e -> e
+         . (KnownNat loc, KnownNat len, loc >= 0, loc < len)
+        => ArrayFixed len e -> e
 readArr = readArr' @loc
 {-# INLINE readArr #-}
 
 readArr' :: forall loc len e ix
-         . (KnownNat loc, KnownNat len, Ix ix, loc >= 0, loc < len)
-        => ArrayFixed' len ix e -> e
+          . (KnownNat loc, KnownNat len, Ix ix, loc >= 0, loc < len)
+         => ArrayFixed' len ix e -> e
 readArr' arr = unsafeAt arr (fromIntegral (natVal (Proxy @loc)))
 {-# INLINE readArr' #-}
 
