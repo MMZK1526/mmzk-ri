@@ -36,9 +36,10 @@ library
     exposed-modules:
         MMZK.Array.Fixed,
         MMZK.Array.Fixed.Unsafe,
+        MMZK.Array.Unboxed.Fixed,
+        MMZK.Array.Unboxed.Fixed.Unsafe,
         MMZK.List.Fixed,
         MMZK.List.Fixed.Unsafe,
-        MMZK.Array.Unboxed.Fixed,
         MMZK.Int.Injection,
         MMZK.Maybe,
         MMZK.Monad,
@@ -48,6 +49,7 @@ library
         MMZK.Text,
     other-modules:
         MMZK.Array.Fixed.Internal,
+        MMZK.Array.Unboxed.Fixed.Internal,
         MMZK.List.Fixed.Internal,
         MMZK.Read.Internal,
     default-extensions:
