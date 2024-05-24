@@ -3,8 +3,8 @@ module MMZK.Monad
   , module Control.Monad
   ) where
 
-import           Control.Monad.Fix
 import           Control.Monad
+import           Control.Monad.Fix
 
 -- | Monadic version of 'when'.
 whenM :: Monad m => m Bool -> m () -> m ()

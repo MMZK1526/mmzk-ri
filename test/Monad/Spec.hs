@@ -1,10 +1,10 @@
-module Maybe.Spec (maybeSpec) where
+module Monad.Spec (monadSpec) where
 
 import           MMZK.Maybe
 import           Test.Hspec
 
-maybeSpec :: Spec
-maybeSpec = describe "MMZK.Maybe" do
+monadSpec :: Spec
+monadSpec = describe "MMZK.Maybe" do
   describe "er2m" do
     it "converts 'Either' to 'Maybe" do
       er2m (Left @String @Bool "foo") `shouldBe` Nothing
