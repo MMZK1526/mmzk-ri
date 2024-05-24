@@ -80,7 +80,7 @@ library
     build-depends:
         array >= 0.5.4 && < 0.6,
         base,
-        text >= 2.0.2 && < 2.1,
+        text >= 2.1 && < 2.2,
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -93,6 +93,7 @@ test-suite test
         Int.Injection.Spec,
         List.Spec,
         Maybe.Spec,
+        Monad.Spec,
         Read.Spec,
         MMZK.Function,
         MMZK.Int.Injection,

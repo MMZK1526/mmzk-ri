@@ -9,7 +9,6 @@ module MMZK.Function
   , module Data.Functor
   , module Data.Maybe
   , module Data.Foldable
-  , module Data.List
   , module Data.Monoid
   , module Data.Ord
   , module Data.String
