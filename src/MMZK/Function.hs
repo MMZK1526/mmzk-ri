@@ -1,4 +1,4 @@
--- | A re-export of some commonly used functions and typeclasses.
+-- | A re-export of some commonly used functions and type-classes.
 module MMZK.Function
   ( module Control.Applicative
   , module Control.Monad

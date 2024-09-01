@@ -28,3 +28,13 @@ doWhileM = fix . whenM
 whileM :: Monad m => m Bool -> m a -> m ()
 whileM p m = m >> doWhileM (p >>= (<$ m))
 {-# INLINE whileM #-}
+
+-- | A \"cascade\" operator that retains the result of the first monadic action
+-- after passing the same result to the second.
+infixl 0 >>=.
+(>>=.) :: Monad m => m a -> (a -> m b) -> m a
+m >>=. f = do
+  a <- m
+  _ <- f a
+  pure a
+{-# INLINE (>>=.) #-}
